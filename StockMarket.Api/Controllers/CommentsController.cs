@@ -17,7 +17,7 @@ public class CommentsController : ControllerBase
 		_getCommentsKey = _configuration["GetCommentsKey"];
     }
 
-    [HttpGet("All/{pageNumber}")]
+    [HttpGet("GetAll/{pageNumber}")]
     public async Task<ActionResult> GetAll([FromRoute]int pageNumber, [FromHeader]string key)
     {
 		//> no anyone can get all comments of system, the admin that have a key only can get all comments

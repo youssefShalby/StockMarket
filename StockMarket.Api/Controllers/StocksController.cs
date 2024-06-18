@@ -17,7 +17,7 @@ public class StocksController : ControllerBase
 		_getCommentsKey = _configuration["GetCommentsKey"];
 	}
 
-    [HttpGet("All/{pageNumber}")]
+    [HttpGet("GetAll/{pageNumber}")]
     public async Task<ActionResult> GetAll([FromRoute]int pageNumber, [FromHeader]string key)
     {
 		//> no anyone can get all stocks of system by this endpoint, the admin that have a key only can get all stocks
@@ -34,7 +34,7 @@ public class StocksController : ControllerBase
         return Ok(stocks);
     }
 
-	[HttpGet("AllStocksWithComments/{pageNumber}")]
+	[HttpGet("GetAllStocksWithComments/{pageNumber}")]
 	public async Task<ActionResult> GetAllWithComments([FromRoute] int pageNumber)
 	{
 		//> can access all stocks with comments from this endpoint
@@ -46,7 +46,7 @@ public class StocksController : ControllerBase
 		return Ok(stocks);
 	}
 
-	[HttpGet("filter")]
+	[HttpGet("GetAllWithQuery")]
 	public async Task<ActionResult> GetAllWithFilters([FromBody] StockQueryHandler handler)
 	{
 		//> can access all stocks with comments from this endpoint and user [filter, sort and pagination]
