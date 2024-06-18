@@ -14,20 +14,21 @@ clone the project or download it in your machine
 1. create stock for your business
 2. show all comments of the stock
 3. can get all stcoks with comments of each one
-4. get any stock by symbol, and also can get it by id
-5. can filter stocks and sort them by by price and market value properties
-6. can update and delete any stock
+4. get any stock by symbol
+5. 5. can filter stocks and sort them by by price and market value properties
+6. can update and delete your stocks
 5. we use pagination for any get all endpoint
 
 ### for the comments
-1. can get all comments of any users
-2. can get show comments of another users
+1. can get all comments of your profile
+2. can get show stocks comments of another users
 3. can create, update and delete comment
 4. we also use pagination for any get all comments endpoints
 
 ### for the portfolio
 1. can get, create and delete portfolio
 2. the portfolio represent the M:M relation between the User & Stock
+3. the portfolio represent your stocks and comments
 
 ### **what we Use at The App**
 1. Repository pattern
