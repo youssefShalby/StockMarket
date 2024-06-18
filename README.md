@@ -15,7 +15,7 @@ clone the project or download it in your machine
 2. show all comments of the stock
 3. can get all stcoks with comments of each one
 4. get any stock by symbol
-5. 5. can filter stocks and sort them by by price and market value properties
+5. can filter stocks and sort them by by price and market value properties
 6. can update and delete your stocks
 5. we use pagination for any get all endpoint
 
