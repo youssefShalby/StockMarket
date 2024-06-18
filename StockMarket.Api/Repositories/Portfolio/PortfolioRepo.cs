@@ -22,6 +22,7 @@ public class PortfolioRepo : IPortfolioRepo
         await _context.SaveChangesAsync();
 	}
 
+    //> to serve the Delete portfolio method in PortfolioService
 	public async Task<AppUserStock> GetPortfolioAsync(string userId, int stockId)
 	{
         return await _context.Set<AppUserStock>().FirstOrDefaultAsync(APS => APS.AppUserId == userId && APS.StockId == stockId) ?? new();
@@ -46,6 +47,7 @@ public class PortfolioRepo : IPortfolioRepo
                 Symbol = stock.Stock!.Symbol,
 
             }).ToListAsync();
+
             return stocks; 
 		}
         catch (Exception) 

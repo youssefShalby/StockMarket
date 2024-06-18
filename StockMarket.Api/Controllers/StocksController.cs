@@ -8,15 +8,24 @@ namespace StockMarket.Api.Controllers;
 public class StocksController : ControllerBase
 {
 	private readonly IStockService _stockService;
-    public StocksController(IStockService stockService)
+	private readonly IConfiguration _configuration;
+	private readonly string _getCommentsKey;
+	public StocksController(IStockService stockService, IConfiguration configuration)
     {
         _stockService = stockService;
-    }
+		_configuration = configuration;
+		_getCommentsKey = _configuration["GetCommentsKey"];
+	}
 
-    [HttpGet("p/{pageNumber}")]
-    public async Task<ActionResult> GetAll([FromRoute]int pageNumber)
+    [HttpGet("All/{pageNumber}")]
+    public async Task<ActionResult> GetAll([FromRoute]int pageNumber, [FromHeader]string key)
     {
-        var stocks = await _stockService.GetAllAsync(pageNumber);
+		if (key != _getCommentsKey)
+		{
+			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
+		}
+
+		var stocks = await _stockService.GetAllAsync(pageNumber);
         if(stocks is null)
         {
             return BadRequest("cannot get the stocks right now, try again later..!!");
@@ -24,7 +33,7 @@ public class StocksController : ControllerBase
         return Ok(stocks);
     }
 
-	[HttpGet("C/{pageNumber}")]
+	[HttpGet("AllStocksWithComments/{pageNumber}")]
 	public async Task<ActionResult> GetAllWithComments([FromRoute] int pageNumber)
 	{
 		var stocks = await _stockService.GetAlldWithCommentIncludeAsync(pageNumber);
@@ -35,7 +44,7 @@ public class StocksController : ControllerBase
 		return Ok(stocks);
 	}
 
-	[HttpGet("f")]
+	[HttpGet("filter")]
 	public async Task<ActionResult> GetAllWithFilters([FromBody] StockQueryHandler handler)
 	{
 		var stocks = await _stockService.GetAllWithFilterAsync(handler);
@@ -47,9 +56,13 @@ public class StocksController : ControllerBase
 	}
 
 	[HttpGet("{id:int}")]
-    public async Task<ActionResult> GetById([FromRoute]int id)
+    public async Task<ActionResult> GetById([FromRoute]int id, [FromHeader] string key)
     {
-        var stock = await _stockService.GetByIdAsync(id);
+		if (key != _getCommentsKey)
+		{
+			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
+		}
+		var stock = await _stockService.GetByIdAsync(id);
         if(stock is null)
         {
 			return BadRequest("The Stock Not Founded..!!");
@@ -57,10 +70,15 @@ public class StocksController : ControllerBase
         return Ok(stock);
     }
     
-    [HttpGet("C/{id:int}")]
-    public async Task<ActionResult> GetByIdWithComments([FromRoute]int id)
+    [HttpGet("StockWithComments/{id:int}")]
+    public async Task<ActionResult> GetByIdWithComments([FromRoute]int id, [FromHeader] string key)
     {
-        var stock = await _stockService.GetByIdWithCommentIncludeAsync(id);
+		if (key != _getCommentsKey)
+		{
+			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
+		}
+
+		var stock = await _stockService.GetByIdWithCommentIncludeAsync(id);
         if(stock is null)
         {
 			return BadRequest("The Stock Not Founded..!!");

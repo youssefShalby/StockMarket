@@ -8,14 +8,22 @@ namespace StockMarket.Api.Controllers;
 public class CommentsController : ControllerBase
 {
 	private readonly ICommentService _commentService;
-    public CommentsController(ICommentService commentService)
+	private readonly IConfiguration _configuration;
+	private readonly string _getCommentsKey;
+    public CommentsController(ICommentService commentService, IConfiguration configuration)
     {
         _commentService = commentService;
+		_configuration = configuration;
+		_getCommentsKey = _configuration["GetCommentsKey"];
     }
 
-    [HttpGet("{pageNumber}")]
-    public async Task<ActionResult> GetAll([FromRoute]int pageNumber)
+    [HttpGet("All/{pageNumber}")]
+    public async Task<ActionResult> GetAll([FromRoute]int pageNumber, [FromHeader]string key)
     {
+		if(key != _getCommentsKey)
+		{
+			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
+		}
         var comments = await _commentService.GetAllAsync(pageNumber);
 		if (comments is null)
 		{
@@ -24,13 +32,24 @@ public class CommentsController : ControllerBase
 		return Ok(comments);
 	}
 
-	[HttpGet]
-	public async Task<ActionResult> GetAllByUserId([FromBody] GetAllByUserIdDto model)
+	[HttpGet("GetUserComments/{pageNumber}")]
+	public async Task<ActionResult> GetAllByUserId(int pageNumber)
 	{
 		if (!ModelState.IsValid)
 		{
 			return BadRequest(ModelState);
 		}
+
+		var userId = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier)?.Value ?? "NA";
+
+		if (userId == "NA") return BadRequest("user not found..!!!");
+
+		var model = new GetAllByUserIdDto
+		{
+			UserId = userId,
+			PageNumber = pageNumber
+		}; 
+
 		var comments = await _commentService.GetAllByUserId(model);
 		if (comments is null)
 		{
@@ -39,9 +58,14 @@ public class CommentsController : ControllerBase
 		return Ok(comments);
 	}
 
-	[HttpGet("U/{pageNumber}")]
-	public async Task<ActionResult> GetAllWithUser([FromRoute] int pageNumber)
+	[HttpGet("UsersComments/{pageNumber}")]
+	public async Task<ActionResult> GetAllWithUser([FromRoute] int pageNumber, [FromHeader] string key)
 	{
+		if (key != _getCommentsKey)
+		{
+			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
+		}
+
 		var comments = await _commentService.GetAllWithIncludesAsync(pageNumber);
 		if (comments is null)
 		{
@@ -51,8 +75,13 @@ public class CommentsController : ControllerBase
 	}
 
 	[HttpGet("{id:int}")]
-	public async Task<ActionResult> GetById([FromRoute] int id)
+	public async Task<ActionResult> GetById([FromRoute] int id, [FromHeader] string key)
 	{
+		if (key != _getCommentsKey)
+		{
+			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
+		}
+
 		var comment = await _commentService.GetByIdAsync(id);
 		if (comment is null)
 		{
@@ -77,7 +106,7 @@ public class CommentsController : ControllerBase
 		return Ok(result);
 	}
 
-	[HttpPost("{id:int}")]
+	[HttpPut("{id:int}")]
 	public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentDto model)
 	{
 		if (!ModelState.IsValid)
