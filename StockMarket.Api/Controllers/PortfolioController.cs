@@ -20,6 +20,7 @@ public class PortfolioController : ControllerBase
     [Authorize]
     public async Task<ActionResult> GetUserPortfolio()
     {
+        //> get user stocks, and stocks of user represent the portfolio of user
         var userName = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)!.Value;
         var appUser = await _userManager.FindByEmailAsync(userName);
         var stocks = await _portfolioService.GetUserPortfolioAsync(appUser);
@@ -41,6 +42,7 @@ public class PortfolioController : ControllerBase
 
 		model.UserId = userId;
 
+        //> create relation between user & stock | you can say the user subscribe to stock
 		var result = await _portfolioService.CreatePortfolioAsync(model);
         if (!result.IsSuccessed)
         {
@@ -65,6 +67,7 @@ public class PortfolioController : ControllerBase
 
 		model.UserId = userId;
 
+        //> delete relation
 		var result = await _portfolioService.DeletePortfolioAsync(model);
 		if (!result.IsSuccessed)
 		{

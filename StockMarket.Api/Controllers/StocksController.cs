@@ -20,6 +20,7 @@ public class StocksController : ControllerBase
     [HttpGet("All/{pageNumber}")]
     public async Task<ActionResult> GetAll([FromRoute]int pageNumber, [FromHeader]string key)
     {
+		//> no anyone can get all stocks of system by this endpoint, the admin that have a key only can get all stocks
 		if (key != _getCommentsKey)
 		{
 			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
@@ -36,6 +37,7 @@ public class StocksController : ControllerBase
 	[HttpGet("AllStocksWithComments/{pageNumber}")]
 	public async Task<ActionResult> GetAllWithComments([FromRoute] int pageNumber)
 	{
+		//> can access all stocks with comments from this endpoint
 		var stocks = await _stockService.GetAlldWithCommentIncludeAsync(pageNumber);
 		if (stocks is null)
 		{
@@ -47,6 +49,7 @@ public class StocksController : ControllerBase
 	[HttpGet("filter")]
 	public async Task<ActionResult> GetAllWithFilters([FromBody] StockQueryHandler handler)
 	{
+		//> can access all stocks with comments from this endpoint and user [filter, sort and pagination]
 		var stocks = await _stockService.GetAllWithFilterAsync(handler);
 		if (stocks is null)
 		{
@@ -58,6 +61,7 @@ public class StocksController : ControllerBase
 	[HttpGet("{id:int}")]
     public async Task<ActionResult> GetById([FromRoute]int id, [FromHeader] string key)
     {
+		//> no anyone can access the stock by Id except the Admin
 		if (key != _getCommentsKey)
 		{
 			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
@@ -73,6 +77,7 @@ public class StocksController : ControllerBase
     [HttpGet("StockWithComments/{id:int}")]
     public async Task<ActionResult> GetByIdWithComments([FromRoute]int id, [FromHeader] string key)
     {
+		//> no anyone can access the stock by Id except the Admin
 		if (key != _getCommentsKey)
 		{
 			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
@@ -89,6 +94,7 @@ public class StocksController : ControllerBase
     [HttpGet("{symbol:alpha}")]
     public async Task<ActionResult> GetBySymbol([FromRoute]string symbol)
     {
+		//> anyone can access any stock by symbol
         var stock = await _stockService.GetBySymbolAsync(symbol);
         if(stock is null)
         {

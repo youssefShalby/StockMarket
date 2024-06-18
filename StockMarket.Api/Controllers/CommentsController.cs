@@ -20,6 +20,7 @@ public class CommentsController : ControllerBase
     [HttpGet("All/{pageNumber}")]
     public async Task<ActionResult> GetAll([FromRoute]int pageNumber, [FromHeader]string key)
     {
+		//> no anyone can get all comments of system, the admin that have a key only can get all comments
 		if(key != _getCommentsKey)
 		{
 			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
@@ -61,6 +62,7 @@ public class CommentsController : ControllerBase
 	[HttpGet("UsersComments/{pageNumber}")]
 	public async Task<ActionResult> GetAllWithUser([FromRoute] int pageNumber, [FromHeader] string key)
 	{
+		//> no anyone can get all comments of system, the admin that have a key only can get all comments
 		if (key != _getCommentsKey)
 		{
 			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
@@ -77,6 +79,7 @@ public class CommentsController : ControllerBase
 	[HttpGet("{id:int}")]
 	public async Task<ActionResult> GetById([FromRoute] int id, [FromHeader] string key)
 	{
+		//> no anyone can access comments by Id of system, the admin that have a key only can do it
 		if (key != _getCommentsKey)
 		{
 			return BadRequest("The key to get all comments is not valid, the admin only can have this key");
